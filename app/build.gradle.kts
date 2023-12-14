@@ -2,6 +2,9 @@
 plugins {
     alias(libs.plugins.com.android.application)
     alias(libs.plugins.org.jetbrains.kotlin.android)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.anvil)
+    alias(libs.plugins.kotlin.kapt)
     id("kotlin-parcelize")
 }
 
@@ -42,7 +45,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.3"
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.version.get()
     }
     packaging {
         resources {
@@ -52,10 +55,21 @@ android {
 }
 
 dependencies {
-    implementation("com.slack.circuit:circuit-foundation:0.15.0") {
-        exclude(group = "androidx.emoji2", module = "emoji2")
-    }
+    implementation("com.slack.circuit:circuitx-android:0.17.1")
+    implementation("com.slack.circuit:circuit-foundation:0.17.1")
+    implementation("com.slack.circuit:circuit-backstack:0.17.1")
+    implementation("com.slack.circuit:circuit-runtime:0.17.1")
+    implementation("com.slack.circuit:circuit-runtime-presenter:0.17.1")
+    implementation("com.slack.circuit:circuit-runtime-ui:0.17.1")
+    implementation("com.slack.circuit:circuit-test:0.17.1")
+    implementation("com.slack.circuit:circuit-overlay:0.17.1")
+    implementation("com.slack.circuit:circuit-retained:0.17.1")
 
+    api("com.slack.circuit:circuit-codegen-annotations:0.17.1")
+    ksp("com.slack.circuit:circuit-codegen:0.17.1")
+
+    kapt(libs.dagger.compiler)
+    implementation(libs.dagger)
 
     implementation(libs.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)
