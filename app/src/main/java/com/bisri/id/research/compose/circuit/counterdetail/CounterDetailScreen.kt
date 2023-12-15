@@ -14,15 +14,12 @@ import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.navigation.NavController
 import androidx.navigation.NavDeepLinkRequest
-import com.bisri.id.research.compose.circuit.di.AppScope
-import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedInject
+import kotlin.text.Typography.dagger
 import kotlinx.parcelize.Parcelize
 
 @Stable
@@ -43,10 +40,10 @@ data class CounterDetailScreen(
     }
 }
 
-class CounterDetailPresenter @AssistedInject constructor(
-    @Assisted private val screen: CounterDetailScreen,
-    @Assisted private val navigator: Navigator,
-    @Assisted private val navController: NavController,
+class CounterDetailPresenter(
+    private val screen: CounterDetailScreen,
+    private val navigator: Navigator,
+    private val navController: NavController,
 ) : Presenter<CounterDetailScreen.State> {
 
     @Composable
@@ -72,7 +69,6 @@ class CounterDetailPresenter @AssistedInject constructor(
     }
 }
 
-@CircuitInject(CounterDetailScreen::class, AppScope::class)
 @Composable
 internal fun CounterDetail(
     state: CounterDetailScreen.State,

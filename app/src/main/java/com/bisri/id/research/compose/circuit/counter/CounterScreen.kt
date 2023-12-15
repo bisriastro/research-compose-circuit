@@ -1,6 +1,5 @@
 package com.bisri.id.research.compose.circuit.counter
 
-import android.service.autofill.Validators.or
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,30 +12,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.net.toUri
 import androidx.navigation.NavController
-import androidx.navigation.NavDeepLinkRequest
-import androidx.navigation.findNavController
 import com.bisri.id.research.compose.circuit.counterdetail.CounterDetailScreen
-import com.bisri.id.research.compose.circuit.di.AppScope
-import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedInject
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -49,21 +39,23 @@ data object CounterScreen : Screen {
         ) : State
     }
 
-    sealed interface Event : CircuitUiEvent {
+    interface Event : CircuitUiEvent {
         data class GoTo(val screen: Screen) : Event
         data object Increment : Event
         data object Decrement : Event
     }
 }
 
-class CounterPresenter @AssistedInject constructor(
-    @Assisted private val navigator: Navigator,
-    @Assisted private val navController: NavController,
+class CounterPresenter(
+    private val navigator: Navigator,
+    private val navController: NavController,
 ): Presenter<CounterScreen.State> {
 
     @Composable
     override fun present(): CounterScreen.State {
         var count by rememberRetained { mutableIntStateOf(0) }
+
+        println("Bisrinursa count $count")
 
         val keyIsResultReceived = "isResultReceived"
         val isResultReceived = navController.currentBackStackEntry?.savedStateHandle
@@ -82,7 +74,6 @@ class CounterPresenter @AssistedInject constructor(
     }
 }
 
-@CircuitInject(CounterScreen::class, AppScope::class)
 @Composable
 fun Counter(
     state: CounterScreen.State,

@@ -2,9 +2,6 @@
 plugins {
     alias(libs.plugins.com.android.application)
     alias(libs.plugins.org.jetbrains.kotlin.android)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.anvil)
-    alias(libs.plugins.kotlin.kapt)
     id("kotlin-parcelize")
 }
 
@@ -65,12 +62,6 @@ dependencies {
     implementation("com.slack.circuit:circuit-test:0.17.1")
     implementation("com.slack.circuit:circuit-overlay:0.17.1")
     implementation("com.slack.circuit:circuit-retained:0.17.1")
-
-    api("com.slack.circuit:circuit-codegen-annotations:0.17.1")
-    ksp("com.slack.circuit:circuit-codegen:0.17.1")
-
-    kapt(libs.dagger.compiler)
-    implementation(libs.dagger)
 
     implementation(libs.fragment.ktx)
     implementation(libs.fragment.navigation.ktx)
