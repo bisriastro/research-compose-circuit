@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_home"
+    app:startDestination="@id/mainFragment"
+    tools:ignore="MissingDefaultResource">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.bisri.id.research.compose.circuit.FirstFragment"
+        android:label="MainFragment">
+
+        <deepLink
+            android:id="@+id/deeplinkHomeFragment"
+            app:uri="circuit://screen/first"/>
+
+    </fragment>
+
+</navigation>

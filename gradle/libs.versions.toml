@@ -14,6 +14,8 @@ kotlin = "1.9.21"
 ksp = "1.9.21-1.0.15"
 dagger = "2.49"
 moshix = "0.25.1"
+fragment = "1.6.2"
+fragment-navigation = "2.7.6"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -33,6 +35,9 @@ material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-compose-compiler = { module = "androidx.compose.compiler:compiler", version.ref = "compose-compiler-version" }
 dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "dagger" }
 dagger = { module = "com.google.dagger:dagger", version.ref = "dagger" }
+fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragment" }
+fragment-navigation-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "fragment-navigation" }
+ui-navigation = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "fragment-navigation" }
 
 [plugins]
 anvil = { id = "com.squareup.anvil", version.ref = "anvil" }

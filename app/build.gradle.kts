@@ -43,6 +43,7 @@ android {
     }
     buildFeatures {
         compose = true
+        viewBinding = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.compose.compiler.version.get()
@@ -70,6 +71,10 @@ dependencies {
 
     kapt(libs.dagger.compiler)
     implementation(libs.dagger)
+
+    implementation(libs.fragment.ktx)
+    implementation(libs.fragment.navigation.ktx)
+    implementation(libs.ui.navigation)
 
     implementation(libs.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)
