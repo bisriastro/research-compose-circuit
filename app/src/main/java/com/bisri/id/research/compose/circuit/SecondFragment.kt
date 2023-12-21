@@ -8,12 +8,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavDeepLinkRequest
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.bisri.id.research.compose.circuit.counter.Counter
 import com.bisri.id.research.compose.circuit.counter.CounterPresenter
@@ -30,6 +28,10 @@ import com.slack.circuit.overlay.ContentWithOverlays
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.ui.Ui
 import com.slack.circuit.runtime.ui.ui
+import com.slack.circuitx.android.AndroidScreen
+import com.slack.circuitx.android.rememberAndroidScreenAwareNavigator
+import kotlinx.parcelize.Parcelize
+import kotlinx.parcelize.RawValue
 
 class SecondFragment : Fragment() {
 
@@ -54,10 +56,11 @@ class SecondFragment : Fragment() {
                             push(CounterScreen)
                         }
                         val circuitNavigator = rememberCircuitNavigator(backstack)
+                        val navigator = rememberAndroidScreenAwareNavigator(circuitNavigator, this@SecondFragment::goTo)
                         CircuitCompositionLocals(circuit) {
                             ContentWithOverlays {
                                 NavigableCircuitContent(
-                                    navigator = circuitNavigator,
+                                    navigator = navigator,
                                     backstack = backstack
                                 )
                             }
@@ -68,11 +71,29 @@ class SecondFragment : Fragment() {
         }
     }
 
+    private fun goTo(screen: AndroidScreen) {
+        if (screen is FragmentNavigationScreen) {
+            val request = NavDeepLinkRequest.Builder
+                .fromUri("circuit://screen/first".toUri())
+                .build()
+            findNavController().navigate(request)
+        }
+
+        if (screen is ComposePopNavigationScreen) {
+            val savedStateHandle = findNavController().currentBackStackEntry
+                ?.savedStateHandle
+
+            screen.bundle.map {
+                savedStateHandle?.set(it.key, it.value)
+            }
+        }
+    }
+
     private fun buildPresenterFactory(): Presenter.Factory {
         return Presenter.Factory { screen, navigator, _ ->
             when (screen) {
                 is CounterScreen -> CounterPresenter(navigator, findNavController())
-                is CounterDetailScreen -> CounterDetailPresenter(screen, navigator, findNavController())
+                is CounterDetailScreen -> CounterDetailPresenter(screen, navigator)
                 else -> null
             }
         }
@@ -92,3 +113,13 @@ class SecondFragment : Fragment() {
         }
     }
 }
+
+@Parcelize
+data class FragmentNavigationScreen(
+    val url: String = "",
+) : AndroidScreen
+
+@Parcelize
+data class ComposePopNavigationScreen(
+    val bundle: @RawValue Map<String, Any> = mapOf(),
+) : AndroidScreen

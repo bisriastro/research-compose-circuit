@@ -11,15 +11,13 @@ import androidx.compose.runtime.Stable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
-import androidx.core.net.toUri
-import androidx.navigation.NavController
-import androidx.navigation.NavDeepLinkRequest
+import com.bisri.id.research.compose.circuit.ComposePopNavigationScreen
+import com.bisri.id.research.compose.circuit.FragmentNavigationScreen
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
-import kotlin.text.Typography.dagger
 import kotlinx.parcelize.Parcelize
 
 @Stable
@@ -43,7 +41,6 @@ data class CounterDetailScreen(
 class CounterDetailPresenter(
     private val screen: CounterDetailScreen,
     private val navigator: Navigator,
-    private val navController: NavController,
 ) : Presenter<CounterDetailScreen.State> {
 
     @Composable
@@ -52,16 +49,14 @@ class CounterDetailPresenter(
         return CounterDetailScreen.State.Success { event ->
             when (event) {
                 CounterDetailScreen.Event.GoTo -> {
-                    val request = NavDeepLinkRequest.Builder
-                        .fromUri("circuit://screen/first".toUri())
-                        .build()
-                    navController.navigate(request)
+                    navigator.goTo(FragmentNavigationScreen("circuit://screen/first"))
                 }
 
                 CounterDetailScreen.Event.Pop -> {
-                    navController.currentBackStackEntry
-                        ?.savedStateHandle
-                        ?.set("isResultReceived", true)
+                    val bundle = hashMapOf<String, Any>()
+                    bundle["isResultReceived"] = true
+
+                    navigator.goTo(ComposePopNavigationScreen(bundle))
                     navigator.pop()
                 }
             }
