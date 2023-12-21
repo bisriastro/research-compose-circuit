@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,17 +22,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.bisri.id.research.compose.circuit.counterdetail.CounterDetailScreen
+import com.slack.circuit.retained.produceRetainedState
 import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
+import kotlinx.coroutines.delay
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data object CounterScreen : Screen {
     sealed interface State : CircuitUiState {
+        data object Loading : State
         data class Success(
             val isResultReceived: Boolean = false,
             val count: Int = 0,
@@ -55,8 +59,6 @@ class CounterPresenter(
     override fun present(): CounterScreen.State {
         var count by rememberRetained { mutableIntStateOf(0) }
 
-        println("Bisrinursa count $count")
-
         val keyIsResultReceived = "isResultReceived"
         val isResultReceived = navController.currentBackStackEntry?.savedStateHandle
             ?.get<Boolean>(keyIsResultReceived)
@@ -64,11 +66,30 @@ class CounterPresenter(
 
         navController.currentBackStackEntry?.savedStateHandle?.remove<Boolean>(keyIsResultReceived)
 
-        return CounterScreen.State.Success(isResultReceived, count) { event ->
-            when (event) {
-                is CounterScreen.Event.GoTo -> navigator.goTo(event.screen)
-                CounterScreen.Event.Increment -> count++
-                CounterScreen.Event.Decrement -> count--
+        /**
+         * Use produce state
+         * Then start loading state -> delay -> start success state
+         *
+         * Use produce retained state
+         * Then no loading state and use existing success state -> no delay -> start success state
+         */
+        val state by produceRetainedState(false) {
+            delay(2 * 1000)
+            value = true
+        }
+
+        return when {
+            state.not() -> {
+                CounterScreen.State.Loading
+            }
+            else -> {
+                CounterScreen.State.Success(isResultReceived, count) { event ->
+                    when (event) {
+                        is CounterScreen.Event.GoTo -> navigator.goTo(event.screen)
+                        CounterScreen.Event.Increment -> count++
+                        CounterScreen.Event.Decrement -> count--
+                    }
+                }
             }
         }
     }
@@ -80,6 +101,14 @@ fun Counter(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+
+    if (state is CounterScreen.State.Loading) {
+        Box(modifier.fillMaxSize()) {
+            Column(Modifier.align(Alignment.Center)) {
+                CircularProgressIndicator()
+            }
+        }
+    }
 
     if (state is CounterScreen.State.Success) {
         Toast.makeText(context, "Is result received ${state.isResultReceived}", Toast.LENGTH_LONG).show()
