@@ -3,11 +3,14 @@ plugins {
     alias(libs.plugins.com.android.application)
     alias(libs.plugins.org.jetbrains.kotlin.android)
     id("kotlin-parcelize")
+    id("io.github.takahirom.roborazzi")
 }
 
 android {
     namespace = "com.bisri.id.research.compose.circuit"
     compileSdk = 34
+
+    testOptions.unitTests.isIncludeAndroidResources = true
 
     defaultConfig {
         applicationId = "com.bisri.id.research.compose.circuit"
@@ -32,11 +35,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions.jvmTarget = "11"
+        kotlinOptions.jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -86,4 +89,10 @@ dependencies {
     testImplementation("com.slack.circuit:circuit-test:0.17.0")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
     testImplementation("org.robolectric:robolectric:4.11.1")
+
+    testImplementation("io.github.takahirom.roborazzi:roborazzi:1.9.0-alpha-2")
+    testImplementation("io.github.takahirom.roborazzi:roborazzi-compose:1.9.0-alpha-2")
+    testImplementation("io.github.takahirom.roborazzi:roborazzi-junit-rule:1.9.0-alpha-2")
+    testImplementation("androidx.compose.ui:ui-test-junit4")
+    testImplementation("androidx.test.ext:junit-ktx:1.1.5")
 }

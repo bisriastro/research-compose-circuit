@@ -4,5 +4,6 @@ plugins {
     alias(libs.plugins.com.android.application) apply false
     alias(libs.plugins.org.jetbrains.kotlin.android) apply false
     alias(libs.plugins.kotlin.jvm) apply false
+    id("io.github.takahirom.roborazzi") version "1.9.0-alpha-2" apply false
 }
 true // Needed to make the Suppress annotation work for the plugins block
